@@ -26,7 +26,9 @@ class GovernanceEngine(Protocol):
         """Decide whether a tool call may execute now, needs approval, or is denied."""
         ...
 
-    def resolve(self, approval_id: str, approved: bool, operator_note: str = "") -> GovernanceDecision:
+    def resolve(
+        self, approval_id: str, approved: bool, operator_note: str = ""
+    ) -> GovernanceDecision:
         """Apply an operator decision to a queued approval and notify the user."""
         ...
 
