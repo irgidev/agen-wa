@@ -1,0 +1,40 @@
+services:
+  webhook:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    command: python -m uvicorn webhook.app:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./audit:/app/audit
+
+  mock-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    command: python -m uvicorn mock_service.app:app --host 0.0.0.0 --port 8001
+    ports:
+      - "8001:8001"
+    environment:
+      AUDIT_LOG_PATH: /app/audit/audit.jsonl
+    volumes:
+      - db:/app/data
+      - ./audit:/app/audit
+
+  operator-console:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    command: python -m uvicorn operator_console.app:app --host 0.0.0.0 --port 8002
+    ports:
+      - "8002:8002"
+    volumes:
+      - db:/app/data
+      - ./audit:/app/audit
+
+volumes:
+  db:
